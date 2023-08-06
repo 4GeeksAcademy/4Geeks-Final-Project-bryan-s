@@ -14,12 +14,17 @@ while : ; do
   echo "$output" | grep -q "5057.preview.app.github.dev"
   second_string_found=$?
 
-  echo "$output" | grep -q "9099.preview.app.github.dev"
+  echo "$output" | grep -q "9199.preview.app.github.dev"
   third_string_found=$?
+
+  echo "$output" | grep -q "9099.preview.app.github.dev"
+  fourth_string_found=$?
+  
 
   if [ $first_string_found -eq 0 ] && [ $second_string_found -eq 0 ] && [ $third_string_found -eq 0 ]; then
     gh codespace ports visibility 5001:public -c $CODESPACE_NAME;
     gh codespace ports visibility 5057:public -c $CODESPACE_NAME;
+    gh codespace ports visibility 9199:public -c $CODESPACE_NAME;
     gh codespace ports visibility 9099:public -c $CODESPACE_NAME;
     break
   fi
@@ -27,7 +32,8 @@ while : ; do
   sleep 1 
 done
 
-echo "GET_USERS_ENDPOINT=\"https://$CODESPACE_NAME-5001.preview.app.github.dev/geeks-firebase-72e6d/us-central1/getUsers\"" > ./functions/.env
+echo "GET_USERS_ENDPOINT=\"https://$CODESPACE_NAME-5001.preview.app.github.dev/photo-sharing-app-354f6/us-central1/getUsers\"" > ./functions/.env
 echo "REACT_APP_FIREBASE_FUNCTIONS_HOST=\"https://$CODESPACE_NAME-5001.preview.app.github.dev\"" > ./react-app/.env;
 echo "REACT_APP_FIREBASE_FIRESTORE_HOST=\"https://$CODESPACE_NAME-5057.preview.app.github.dev\"" >> ./react-app/.env;
+echo "REACT_APP_FIREBASE_STORAGE_HOST=\"https://$CODESPACE_NAME-9199.preview.app.github.dev\"" >> ./react-app/.env;
 echo "REACT_APP_FIREBASE_AUTH_HOST=\"https://$CODESPACE_NAME-9099.preview.app.github.dev\"" >> ./react-app/.env;

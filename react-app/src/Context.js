@@ -1,47 +1,37 @@
 import React, { createContext, useState, useEffect } from 'react';
-
-import { auth } from './index'
+import { auth } from './index';
 
 export const Context = createContext();
 
 export default function ContextProvider(props) {
+  const [user, setUser] = useState({});
 
-    const [user, setUser] = useState({});
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
+      console.log('In the onAuthStateChanged function');
 
-    useEffect(() => {
+      if (firebaseUser) {
+        console.log('User is signed in');
 
-        auth.onAuthStateChanged(async (user) => {
-            console.log('In the onAuthStateChanged function');
+        setUser({
+          uid: firebaseUser.uid,
+          email: firebaseUser.email,
+          // any other user info you need
+        });
 
-            if (user) {
+      } else {
+        console.log('User not signed in');
+        setUser(null);
+      }
+    });
 
-                console.log('User is signed in')
+    return unsubscribe; // Unsubscribe when component is unmounted
+  }, []);
 
-                const res = await fetch(`${process.env.REACT_APP_FIREBASE_FUNCTIONS_HOST}/geeks-firebase-72e6d/us-central1/signUpOrSigninUser`, {
-                    method: 'post',
-                    body: JSON.stringify({ email: user.email }),
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                const data = await res.json();
-
-                console.log('data', data);
-
-                setUser(data.data);
-            }
-            else {
-
-                console.log('User not signed in');
-                setUser({});
-            }
-        })
-    }, []);
-
-    return (
-        <Context.Provider value={{ user }}>
-            {props.children}
-        </Context.Provider>
-    )
+  return (
+    <Context.Provider value={{ user, setUser }}>
+      {props.children}
+    </Context.Provider>
+  );
 }
+

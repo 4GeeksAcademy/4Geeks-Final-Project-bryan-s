@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { ChakraProvider } from '@chakra-ui/react'
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
@@ -8,30 +9,38 @@ import { initializeApp } from "firebase/app";
 import { getFunctions, connectFunctionsEmulator } from "firebase/functions";
 import { getAuth, connectAuthEmulator } from 'firebase/auth';
 import { connectFirestoreEmulator, getFirestore } from 'firebase/firestore';
+import { getStorage, connectStorageEmulator } from 'firebase/storage'; // import storage functions
 import ContextProvider from "./Context";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyB1UJSTIdYzKDgayNSRWMlVc_6i6J04Krg",
-  authDomain: "geeks-firebase-72e6d.firebaseapp.com",
-  projectId: "geeks-firebase-72e6d",
-  storageBucket: "geeks-firebase-72e6d.appspot.com",
-  messagingSenderId: "161315790364",
-  appId: "1:161315790364:web:08d050f50f2f75a97149d9",
-  measurementId: "G-ZCNEK8BRJL",
+  apiKey: "AIzaSyCFsgJOGx56Zzh33kXQT5psnrsEDuBvneI",
+  authDomain: "photo-sharing-app-354f6.firebaseapp.com",
+  projectId: "photo-sharing-app-354f6",
+  storageBucket: "photo-sharing-app-354f6.appspot.com",
+  messagingSenderId: "320464214659",
+  appId: "1:320464214659:web:7eb227f35019999476d9b6",
+  measurementId: "G-5029FW5VRV"
 };
 
 const app = initializeApp(firebaseConfig);
 const functions = getFunctions(app);
 export const auth = getAuth(app);
 export const firestore = getFirestore(app);
+export const storage = getStorage(app);
+
 connectFunctionsEmulator(functions, "127.0.0.1", 5001);
 connectAuthEmulator(auth, process.env.REACT_APP_FIREBASE_AUTH_HOST);
 connectFirestoreEmulator(firestore, process.env.REACT_APP_FIREBASE_FIRESTORE_HOST);
+connectStorageEmulator(storage, process.env.REACT_APP_FIREBASE_STORAGE); // connect to Storage emulator
+
+export { getFunctions };
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <ContextProvider>
-    <App />
+    <ChakraProvider>
+      <App />
+    </ChakraProvider>
   </ContextProvider>
 );
 

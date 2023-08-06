@@ -1,0 +1,45 @@
+.main {
+    background: #0B132B;
+}
+
+.not-found-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; 
+    text-align: center; 
+}
+
+h1 {
+    font-size: 15rem;
+    font-weight: 700;
+    color: #ffffff;
+    text-shadow: 0 4px 6px rgba(0,0,0,0.2);
+}
+
+h2 {
+    font-size: 3rem;
+    font-weight: 400;
+    color: #ffffff;
+    text-shadow: 0 4px 6px rgba(0,0,0,0.2);
+}
+
+p {
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: #ffffff;
+    text-shadow: 0 4px 6px rgba(0,0,0,0.2);
+}
+
+.home {
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: #ffffff;
+    text-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    text-decoration: dashed;
+}
+
+.home a:hover{
+    color: #5BC0BE;
+    text-decoration: none;
+}

@@ -2,7 +2,7 @@
   "name": "functions",
   "description": "Cloud Functions for Firebase",
   "scripts": {
-    "serve": "firebase emulators:start --only functions,auth,firestore --import ./emulator_data --export-on-exit ./emulator_data",
+    "serve": "firebase emulators:start --only functions,auth,firestore,storage --import ./emulator_data --export-on-exit ./emulator_data",
     "shell": "firebase functions:shell",
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",

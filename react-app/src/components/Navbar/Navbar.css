@@ -1,0 +1,86 @@
+@media screen and (max-width: 1000px) {
+  .myNavbar {
+    width: 90%;
+    padding: 1rem 1rem;
+  }
+
+  .myNavbar .navbar-brand {
+    font-size: 1.2rem;
+  }
+
+  .myNavbar .separator {
+    display: none;
+  }
+}
+
+.myNavbar {
+    display: flex;
+    position: fixed;
+    width: 60%;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: #1a1a1a;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 1%;
+    z-index: 100;
+}
+  
+.myNavbar .navbar-brand {
+    color: #ffffff;
+    text-decoration: none;
+    font-family: "good-times", sans-serif;
+    font-weight: bold;
+    font-size: 1.8rem;
+}
+  
+.myNavbar .navbar-collapse {
+    justify-content: flex-end;
+}
+
+.myNavbar .nav, .nav-link {
+    color: #ffffff;  /* The text color of Sign-In, Sign-Out and Sign-Up links is set to white */
+    font-family: kallisto, sans-serif; 
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 400;
+    border: none;
+}
+
+.myNavbar .separator {
+  width: 2px; 
+  height: 30px;
+  background-color: #ffffff;
+  align-self: center;
+  margin: 0 15px; 
+}
+
+.myNavbar .nav, .nav-link:hover {
+    color: #5BC0BE;
+}
+
+.hamburger {
+  border: 1px solid white !important;
+}
+
+.custom-toggle {
+  background-color: transparent !important;
+  border-color: white !important;
+  color: white !important;
+}
+
+.dropdown-item {
+  color: #ffffff !important;
+}
+
+.dropdown-menu {
+  background-color: #1a1a1a !important;
+}
+
+.dropdown-divider {
+  border-top: 2px solid #1a1a1a !important;
+  opacity: 1 !important;
+}

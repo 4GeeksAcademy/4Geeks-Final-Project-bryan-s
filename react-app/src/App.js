@@ -5,6 +5,7 @@ import LandingPage from "./components/LandingPage/landingPage";
 import SignIn from './components/Sign-In/SignIn';
 import SignUp from './components/Sign-Up/SignUp';
 import HomePage from './components/HomePage/HomePage';
+import UserPage from './components/UserPage/UserPage';
 import PageNotFound from './components/PageNotFound/PageNotFound';
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/homepage" element={<HomePage />} />
+        <Route path="/userpage/:id" element={<UserPage />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </BrowserRouter>

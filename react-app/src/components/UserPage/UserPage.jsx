@@ -1,36 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from '../Navbar/Navbar';
-import { getAuth } from "firebase/auth";
 import { doc, getDoc, setDoc, collection, addDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { storage, db } from "../firebase";
+import UserProfileEditForm from './UserProfileEditForm';
 import './UserPage.css';
+import { auth, firestore, storage } from '../../index'; // import directly from index
 
 const UserPage = () => {
     const [userProfile, setUserProfile] = useState(null);
     const [newGalleryItem, setNewGalleryItem] = useState(null);
     const [editMode, setEditMode] = useState(false);
-    const auth = getAuth();
     const currentUser = auth.currentUser;
 
     useEffect(() => {
-      const fetchUserProfile = async () => {
-        if (currentUser) {
-          const userDocRef = doc(db, "users", currentUser.uid);
-          const userDocSnap = await getDoc(userDocRef);
-          if (userDocSnap.exists()) {
-            setUserProfile(userDocSnap.data());
-          } else {
-            console.log("No such document!");
-          }
-        }
-      };
+        const fetchUserProfile = async () => {
+            if (currentUser) {
+                const userDocRef = doc(firestore, "users", currentUser.uid);
+                const userDocSnap = await getDoc(userDocRef);
+                if (userDocSnap.exists()) {
+                    setUserProfile(userDocSnap.data());
+                } else {
+                    console.log("No such document!");
+                }
+            }
+        };
 
-      fetchUserProfile();
+        fetchUserProfile();
     }, [currentUser]);
 
     const handleProfileUpdate = async (updatedProfile) => {
-        const userDocRef = doc(db, "users", currentUser.uid);
+        const userDocRef = doc(firestore, "users", currentUser.uid);
         await setDoc(userDocRef, updatedProfile);
         setUserProfile(updatedProfile);
         setEditMode(false);
@@ -42,7 +41,7 @@ const UserPage = () => {
             await uploadBytes(storageRef, newGalleryItem);
             const downloadURL = await getDownloadURL(storageRef);
 
-            const galleryColRef = collection(db, "users", currentUser.uid, "gallery");
+            const galleryColRef = collection(firestore, "users", currentUser.uid, "gallery");
             await addDoc(galleryColRef, { imageURL: downloadURL });
         }
     };
@@ -78,3 +77,5 @@ const UserPage = () => {
 };
 
 export default UserPage;
+
+

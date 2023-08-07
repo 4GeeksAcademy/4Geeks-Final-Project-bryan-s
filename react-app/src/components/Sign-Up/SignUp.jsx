@@ -32,7 +32,7 @@ const SignUp = () => {
         console.log("User data successfully written to Firestore!");
 
         //signUpOrSigninUser function call here:
-        const res = await fetch(`${process.env.REACT_APP_FIREBASE_FUNCTIONS_HOST}/photo-sharing-app-354f6/us-central1/signUpOrSigninUser`, {
+        const res = await fetch(`http://127.0.0.1:5001/photo-sharing-app-354f6/us-central1/signUpUser`, {
           method: 'post',
           body: JSON.stringify({ email: user.email }),
           headers: {

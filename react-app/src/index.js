@@ -28,10 +28,10 @@ export const auth = getAuth(app);
 export const firestore = getFirestore(app);
 export const storage = getStorage(app);
 
-connectFunctionsEmulator(functions, "127.0.0.1", 5001);
-connectAuthEmulator(auth, process.env.REACT_APP_FIREBASE_AUTH_HOST);
-connectFirestoreEmulator(firestore, process.env.REACT_APP_FIREBASE_FIRESTORE_HOST);
-connectStorageEmulator(storage, process.env.REACT_APP_FIREBASE_STORAGE); // connect to Storage emulator
+connectFunctionsEmulator(functions, "localhost", 5001);
+connectAuthEmulator(auth, "http://localhost:9099"); 
+connectFirestoreEmulator(firestore, "localhost", 5057);
+connectStorageEmulator(storage, "localhost", 9199); 
 
 export { getFunctions };
 

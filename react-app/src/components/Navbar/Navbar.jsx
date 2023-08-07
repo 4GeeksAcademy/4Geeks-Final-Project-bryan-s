@@ -60,15 +60,16 @@ const CustomNavbar = () => {
           <Navbar.Collapse id="responsive-navbar-nav">
             {user ? (
               <Dropdown alignRight>
-                <Dropdown.Toggle variant="success" id="dropdown-basic" className="hamburger custom-toggle">
-                  <img src={user.photoURL} alt="Profile" className="profile-image"/>
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  <Dropdown.Item as={Link} to={`/profile/${user.uid}`}>Profile</Dropdown.Item>
-                  <Dropdown.Divider />
-                  <Dropdown.Item onClick={handleSignOut}>Sign Out</Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
+              <Dropdown.Toggle variant="success" id="dropdown-basic" className="hamburger custom-toggle">
+                <img src={user.photoURL} alt="Profile" className="profile-image"/>
+              </Dropdown.Toggle>
+        
+              <Dropdown.Menu>
+                <Dropdown.Item as={Link} to={`/userpage/${user.uid}`}>Profile</Dropdown.Item>  {/* updated here */}
+                <Dropdown.Divider />
+                <Dropdown.Item onClick={handleSignOut}>Sign Out</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
             ) : (
               <>
                 <Nav.Link as={Link} to="/signin" className="nav-link">Sign-In</Nav.Link>
@@ -86,7 +87,7 @@ const CustomNavbar = () => {
           <Dropdown.Menu>
             {user ? (
               <>
-                <Dropdown.Item as={Link} to={`/profile/${user.uid}`}>Profile</Dropdown.Item>
+                <Dropdown.Item as={Link} to={`/userpage/${user.uid}`}>Profile</Dropdown.Item>
                 <Dropdown.Divider />
                 <Dropdown.Item onClick={handleSignOut}>Sign Out</Dropdown.Item>
               </>

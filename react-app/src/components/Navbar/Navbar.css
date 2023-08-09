@@ -81,6 +81,10 @@
 }
 
 .dropdown-divider {
-  border-top: 2px solid #1a1a1a !important;
+  border-top: 2px solid rgb(133, 133, 133) !important;
   opacity: 1 !important;
+}
+
+strong {
+  font-weight: 800;
 }

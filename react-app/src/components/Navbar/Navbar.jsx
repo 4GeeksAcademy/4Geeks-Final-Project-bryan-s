@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { FiMenu } from 'react-icons/fi';
 import './Navbar.css';
 import { Link } from 'react-router-dom';
-import { auth } from '../../index';
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { signOut } from "firebase/auth";
+import { auth } from '../../index'; 
 import { Navbar, Nav, Dropdown } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import { Context } from '../../Context';  // Adjust the path accordingly
 
 const CustomNavbar = () => {
-  const [user, setUser] = useState(null);
+  const { user } = useContext(Context);  // Use the user from the context instead
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const navigate = useNavigate();
 
@@ -24,21 +25,8 @@ const CustomNavbar = () => {
     };
   }, []);
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUser(user);
-      } else {
-        setUser(null);
-      }
-    });
-
-    // Cleanup subscription on unmount
-    return () => unsubscribe();
-  }, []);
-
   const handleSignOut = () => {
-    signOut(auth)
+    signOut(auth)  // Note: ensure you're passing the correct auth instance here, perhaps from the context if required
       .then(() => {
         console.log("User signed out");
         navigate('/'); // replace with the path of your landing page if it's not '/'
@@ -53,23 +41,25 @@ const CustomNavbar = () => {
       <Navbar.Brand className="logo" href="/">Vaultfolio</Navbar.Brand>
 
       {windowWidth > 1000 ? (
-        <>
-          <Navbar.Toggle aria-controls="responsive-navbar-nav" className="hamburger">
+    <>
+        <Navbar.Toggle aria-controls="responsive-navbar-nav" className="hamburger">
             <FiMenu color="white" size="1.5em" />
-          </Navbar.Toggle>
-          <Navbar.Collapse id="responsive-navbar-nav">
+        </Navbar.Toggle>
+        <Navbar.Collapse id="responsive-navbar-nav">
             {user ? (
-              <Dropdown alignRight>
-              <Dropdown.Toggle variant="success" id="dropdown-basic" className="hamburger custom-toggle">
-                <img src={user.photoURL} alt="Profile" className="profile-image"/>
-              </Dropdown.Toggle>
-        
-              <Dropdown.Menu>
-                <Dropdown.Item as={Link} to={`/userpage/${user.uid}`}>Profile</Dropdown.Item>  {/* updated here */}
-                <Dropdown.Divider />
-                <Dropdown.Item onClick={handleSignOut}>Sign Out</Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
+                <Dropdown alignright="true">
+                    <Dropdown.Toggle variant="success" id="dropdown-basic" className="hamburger custom-toggle">
+                        <img src={user.photoURL} alt="Profile" className="profile-image"/>
+                    </Dropdown.Toggle>
+            
+                    <Dropdown.Menu>
+                        <Dropdown.Item className="fullNameDropdownItem" disabled><strong>User:</strong>  {user.fullName}</Dropdown.Item> {/* Displaying fullName here */}
+                        <Dropdown.Divider />
+                        <Dropdown.Item as={Link} to={`/userpage/${user.uid}`}>Profile</Dropdown.Item>
+                        <Dropdown.Divider />
+                        <Dropdown.Item onClick={handleSignOut}>Sign Out</Dropdown.Item>
+                    </Dropdown.Menu>
+                </Dropdown>
             ) : (
               <>
                 <Nav.Link as={Link} to="/signin" className="nav-link">Sign-In</Nav.Link>
@@ -82,24 +72,26 @@ const CustomNavbar = () => {
       ) : (
         <Dropdown>
           <Dropdown.Toggle variant="success" id="dropdown-basic" className="hamburger custom-toggle">
-            <FiMenu color="white" size="1.5em" />
+              <FiMenu color="white" size="1.5em" />
           </Dropdown.Toggle>
           <Dropdown.Menu>
-            {user ? (
-              <>
-                <Dropdown.Item as={Link} to={`/userpage/${user.uid}`}>Profile</Dropdown.Item>
-                <Dropdown.Divider />
-                <Dropdown.Item onClick={handleSignOut}>Sign Out</Dropdown.Item>
-              </>
-            ) : (
-              <>
-                <Dropdown.Item as={Link} to="/signin">Sign-In</Dropdown.Item>
-                <Dropdown.Divider />
-                <Dropdown.Item as={Link} to="/signup">Sign-Up</Dropdown.Item>
-              </>
-            )}
+              {user ? (
+                  <>
+                      <Dropdown.Item className="fullNameDropdownItem" disabled>{user.fullName}</Dropdown.Item> 
+                      <Dropdown.Divider />
+                      <Dropdown.Item as={Link} to={`/userpage/${user.uid}`}>Profile</Dropdown.Item>
+                      <Dropdown.Divider />
+                      <Dropdown.Item onClick={handleSignOut}>Sign Out</Dropdown.Item>
+                  </>
+              ) : (
+                  <>
+                      <Dropdown.Item as={Link} to="/signin">Sign-In</Dropdown.Item>
+                      <Dropdown.Divider />
+                      <Dropdown.Item as={Link} to="/signup">Sign-Up</Dropdown.Item>
+                  </>
+              )}
           </Dropdown.Menu>
-        </Dropdown>
+      </Dropdown>
       )}
     </Navbar>
   )

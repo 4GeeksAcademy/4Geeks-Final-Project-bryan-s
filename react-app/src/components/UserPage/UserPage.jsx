@@ -1,21 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Navbar from '../Navbar/Navbar';
+import Footer from '../Footer/Footer';
+import CardUi from './CardUi';
+import { Context } from '../../Context';
 import { doc, getDoc, setDoc, collection, addDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import UserProfileEditForm from './UserProfileEditForm';
 import './UserPage.css';
-import { auth, firestore, storage } from '../../index'; // import directly from index
+import { firestore, storage } from '../../index';
 
 const UserPage = () => {
     const [userProfile, setUserProfile] = useState(null);
     const [newGalleryItem, setNewGalleryItem] = useState(null);
     const [editMode, setEditMode] = useState(false);
-    const currentUser = auth.currentUser;
+    const { user } = useContext(Context); // Extracting the user object from the context
 
     useEffect(() => {
         const fetchUserProfile = async () => {
-            if (currentUser) {
-                const userDocRef = doc(firestore, "users", currentUser.uid);
+            if (user && user.uid) {  // Check for user and user's uid
+                const userDocRef = doc(firestore, "users", user.uid);
                 const userDocSnap = await getDoc(userDocRef);
                 if (userDocSnap.exists()) {
                     setUserProfile(userDocSnap.data());
@@ -26,22 +29,24 @@ const UserPage = () => {
         };
 
         fetchUserProfile();
-    }, [currentUser]);
+    }, [user]);
 
     const handleProfileUpdate = async (updatedProfile) => {
-        const userDocRef = doc(firestore, "users", currentUser.uid);
-        await setDoc(userDocRef, updatedProfile);
-        setUserProfile(updatedProfile);
-        setEditMode(false);
+        if (user && user.uid) {  // Check for user and user's uid
+            const userDocRef = doc(firestore, "users", user.uid);
+            await setDoc(userDocRef, updatedProfile);
+            setUserProfile(updatedProfile);
+            setEditMode(false);
+        }
     };
 
     const handleGalleryUpload = async () => {
-        if (newGalleryItem) {
-            const storageRef = ref(storage, `gallery/${currentUser.uid}/${newGalleryItem.name}`);
+        if (newGalleryItem && user && user.uid) {  // Check for newGalleryItem and user's uid
+            const storageRef = ref(storage, `gallery/${user.uid}/${newGalleryItem.name}`);
             await uploadBytes(storageRef, newGalleryItem);
             const downloadURL = await getDownloadURL(storageRef);
 
-            const galleryColRef = collection(firestore, "users", currentUser.uid, "gallery");
+            const galleryColRef = collection(firestore, "users", user.uid, "gallery");
             await addDoc(galleryColRef, { imageURL: downloadURL });
         }
     };
@@ -49,12 +54,13 @@ const UserPage = () => {
     if (!userProfile) return 'Loading...';
 
     return (
-        <div>
+        <div className='main'>
             <Navbar />
             <div className="user-page">
                 <div className="user-profile">
-                    <div>
-                        <img src={userProfile.profilePic} alt="user-profile-pic" />
+                    <div className="box-01"></div>
+                    <div className="user-profile-bar">
+                    <CardUi />
                     </div>
                     {editMode ? (
                         <UserProfileEditForm userProfile={userProfile} onUpdate={handleProfileUpdate} />
@@ -72,9 +78,10 @@ const UserPage = () => {
                     <button onClick={handleGalleryUpload}>Upload New Gallery Item</button>
                 </div>
             </div>
+            <Footer />
         </div>
     );
-};
+};    
 
 export default UserPage;
 

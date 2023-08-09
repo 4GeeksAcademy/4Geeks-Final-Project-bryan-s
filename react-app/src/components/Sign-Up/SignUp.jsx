@@ -3,7 +3,7 @@ import { auth } from '../../index';
 import { FcGoogle } from 'react-icons/fc';
 import Logo from '../Logo/MainLogo';
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { getFirestore, setDoc } from "firebase/firestore";
+import { getFirestore, setDoc, doc } from "firebase/firestore";
 import fetch from 'node-fetch';
 import "./SignUp.css";
 
@@ -24,14 +24,14 @@ const SignUp = () => {
         const db = getFirestore();
         console.log("Attempting to write to Firestore..."); 
 
-        await setDoc((db, "users", user.uid), {
+        await setDoc(doc(db, "users", user.uid), {
           fullName: fullName,
           email: email,
           gender: gender
-        });
+      });
         console.log("User data successfully written to Firestore!");
 
-        //signUpOrSigninUser function call here:
+        
         const res = await fetch(`http://127.0.0.1:5001/photo-sharing-app-354f6/us-central1/signUpUser`, {
           method: 'post',
           body: JSON.stringify({ email: user.email }),

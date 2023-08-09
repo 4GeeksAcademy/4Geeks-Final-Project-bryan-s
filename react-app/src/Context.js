@@ -1,23 +1,35 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { auth } from './index';
+import { getFirestore, doc, getDoc } from "firebase/firestore";
 
 export const Context = createContext();
 
 export default function ContextProvider(props) {
-  const [user, setUser] = useState({});
-
+  const [user, setUser] = useState(null);
+  
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
-      console.log('In the onAuthStateChanged function');
+      const db = getFirestore();
 
       if (firebaseUser) {
         console.log('User is signed in');
 
-        setUser({
-          uid: firebaseUser.uid,
-          email: firebaseUser.email,
-          // any other user info you need
-        });
+        const userRef = doc(db, "users", firebaseUser.uid); // Assuming your users collection is named "users"
+        const userSnapshot = await getDoc(userRef);
+
+        if (userSnapshot.exists()) {
+          setUser({
+            uid: firebaseUser.uid,
+            email: firebaseUser.email,
+            fullName: userSnapshot.data().fullName // Fetching fullName from Firestore
+          });
+        } else {
+          // Handle the scenario where user exists in auth but not in Firestore (just as a safety measure)
+          setUser({
+            uid: firebaseUser.uid,
+            email: firebaseUser.email,
+          });
+        }
 
       } else {
         console.log('User not signed in');
@@ -25,7 +37,7 @@ export default function ContextProvider(props) {
       }
     });
 
-    return unsubscribe; // Unsubscribe when component is unmounted
+    return () => unsubscribe(); // Unsubscribe when component is unmounted
   }, []);
 
   return (
@@ -34,4 +46,3 @@ export default function ContextProvider(props) {
     </Context.Provider>
   );
 }
-

@@ -26,7 +26,7 @@ const NotFoundPage = () => {
           <CustomNavbar />
   
           <div className="not-found-content">
-              <h1>404</h1>
+              <h1 className="base-title">404</h1>
   
               {/* New div for the background image */}
               <div className="image-container" style={{ 
@@ -40,7 +40,7 @@ const NotFoundPage = () => {
               }}>
               </div>
   
-              <h2>Page Not Found</h2>
+              <h2 className="caption-1">Page Not Found</h2>
               <p>Sorry, the page you are looking for does not exist.</p>
               <div className="home">
                 <Link to="/">Back to Home</Link>

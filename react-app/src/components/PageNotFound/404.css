@@ -10,14 +10,14 @@
     text-align: center; 
 }
 
-h1 {
+.base-title {
     font-size: 15rem;
     font-weight: 700;
     color: #ffffff;
     text-shadow: 0 4px 6px rgba(0,0,0,0.2);
 }
 
-h2 {
+.caption-1 {
     font-size: 3rem;
     font-weight: 400;
     color: #ffffff;

@@ -53,7 +53,7 @@ const CustomNavbar = () => {
                     </Dropdown.Toggle>
             
                     <Dropdown.Menu>
-                        <Dropdown.Item className="fullNameDropdownItem" disabled><strong>User:</strong>  {user.fullName}</Dropdown.Item> {/* Displaying fullName here */}
+                        <Dropdown.Item className="fullNameDropdownItem" disabled><strong>User:</strong>  {user.fullName || 'No Name'}</Dropdown.Item>
                         <Dropdown.Divider />
                         <Dropdown.Item as={Link} to={`/userpage/${user.uid}`}>Profile</Dropdown.Item>
                         <Dropdown.Divider />
@@ -77,7 +77,7 @@ const CustomNavbar = () => {
           <Dropdown.Menu>
               {user ? (
                   <>
-                      <Dropdown.Item className="fullNameDropdownItem" disabled>{user.fullName}</Dropdown.Item> 
+                      <Dropdown.Item className="fullNameDropdownItem" disabled><strong>User:</strong>  {user.fullName || 'No Name'}</Dropdown.Item>
                       <Dropdown.Divider />
                       <Dropdown.Item as={Link} to={`/userpage/${user.uid}`}>Profile</Dropdown.Item>
                       <Dropdown.Divider />

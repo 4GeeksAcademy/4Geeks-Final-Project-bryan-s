@@ -7,7 +7,7 @@ import reportWebVitals from "./reportWebVitals";
 
 import { initializeApp } from "firebase/app";
 import { getFunctions, connectFunctionsEmulator } from "firebase/functions";
-import { getAuth, connectAuthEmulator } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, connectAuthEmulator } from 'firebase/auth';
 import { connectFirestoreEmulator, getFirestore } from 'firebase/firestore';
 import { getStorage, connectStorageEmulator } from 'firebase/storage'; // import storage functions
 import ContextProvider from "./Context";
@@ -34,6 +34,7 @@ connectFirestoreEmulator(firestore, "localhost", 5057);
 connectStorageEmulator(storage, "localhost", 9199); 
 
 export { getFunctions };
+export { signInWithEmailAndPassword, createUserWithEmailAndPassword };
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

@@ -41,7 +41,7 @@ const NotFoundPage = () => {
               </div>
   
               <h2 className="caption-1">Page Not Found</h2>
-              <p>Sorry, the page you are looking for does not exist.</p>
+              <p className="desc">Sorry, the page you are looking for does not exist.</p>
               <div className="home">
                 <Link to="/">Back to Home</Link>
               </div>

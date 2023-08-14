@@ -10,7 +10,7 @@ const auth = getAuth(admin);
 const firestore = getFirestore(admin);
 const storage = getStorage(admin);
 
-const corsHandler = require('./corsMiddleware'); // add this line to import your cors middleware
+const corsHandler = require('./corsMiddleware');
 
 exports.helloWorld = functions.region('us-central1').https.onRequest((req, res) => {
   corsHandler(req, res, () => {
@@ -31,43 +31,21 @@ exports.getUsers = functions.region('us-central1').https.onRequest((req, res) =>
   });
 });
 
-exports.signInUser = functions.region('us-central1').https.onRequest((req, res) => {
-  corsHandler(req, res, async () => {
-    const { email, password } = req.body;
-
-    if (!email || !password) {
-      res.status(400).send('No email or password passed');
-      return;
-    }
-
-    try {
-      const userRecord = await auth.getUserByEmail(email);
-      // More checks can be done here to verify the user and password
-      const userRef = firestore.collection("user").doc(userRecord.uid);
-      const snapshot = await userRef.get();
-      const data = snapshot.data();
-      res.send({ data, msg: 'Operation successful', status: 200 });
-    } catch (error) {
-      res.status(500).send({ msg: error.message, status: 500 });
-    }
-  });
-});
-
 exports.signUpUser = functions.region('us-central1').https.onRequest((req, res) => {
   corsHandler(req, res, async () => {
-    const { email, password } = req.body;
+    const { email, uid, fullName } = req.body; // Added fullName
 
-    if (!email || !password) {
-      res.status(400).send('No email or password passed');
+    if (!email || !uid || !fullName) {  // Checking if fullName is also provided
+      res.status(400).send('Required fields are missing');
       return;
     }
 
     try {
-      const userRecord = await auth.createUser({ email, password });
-      const userRef = firestore.collection("user").doc(userRecord.uid);
+      const userRef = firestore.collection("users").doc(uid);
       const data = {
-        uid: userRecord.uid,
+        uid: uid,
         email,
+        fullName, // Saving fullName
         created_at: new Date().toISOString(),
       };
       await userRef.set(data);
@@ -78,12 +56,63 @@ exports.signUpUser = functions.region('us-central1').https.onRequest((req, res) 
   });
 });
 
-exports.uploadArt = functions.region('us-central1').https.onRequest((req, res) => {
+exports.personalization = functions.region('us-central1').https.onRequest((req, res) => {
   corsHandler(req, res, async () => {
-    const {title, file, uid} = req.body;
+    const { location, bio, uid, profilePicUrl } = req.body;
+
+    if (!location || !bio || !uid || !profilePicUrl) {
+      res.status(400).send('Required fields are missing');
+      return;
+    }
+
+    try {
+      const userRef = firestore.collection("users").doc(uid);
+
+      // Check if the user exists
+      const userSnapshot = await userRef.get();
+      if (!userSnapshot.exists) {
+        res.status(404).send({ msg: 'User not found', status: 404 });
+        return;
+      }
+
+      await userRef.update({
+        location: location,
+        bio: bio,
+        profilePic: profilePicUrl  // updating the profile picture URL
+      });
+
+      res.send({ msg: 'User personalization successful', status: 200 });
+    } catch (error) {
+      res.status(500).send({ msg: error.message, status: 500 });
+    }
+  });
+});
+
+
+exports.resetPassword = functions.region('us-central1').https.onRequest((req, res) => {
+  corsHandler(req, res, async () => {
+    const { email } = req.body;
+
+    if (!email) {
+      res.status(400).send('No email provided');
+      return;
+    }
+
+    try {
+      await auth.sendPasswordResetEmail(email);
+      res.send({ msg: 'Password reset email sent', status: 200 });
+    } catch (error) {
+      res.status(500).send({ msg: error.message, status: 500 });
+    }
+  });
+});
+
+exports.uploadArt = functions.region('us-central1').https.onRequest((req, res) => {
+  cors(req, res, async () => {
+    const { title, file, uid } = req.body;
 
     if (!title || !file || !uid) {
-      res.status(400).send('No title, file or uid passed');
+      res.status(400).send('No title, file, or uid passed');
       return;
     }
 
@@ -97,7 +126,7 @@ exports.uploadArt = functions.region('us-central1').https.onRequest((req, res) =
       });
 
       blobWriter.on('error', (err) => {
-        logger.error(err);
+        console.error(err);
         res.status(500).send({ msg: err.message, status: 500 });
       });
 
@@ -115,10 +144,8 @@ exports.uploadArt = functions.region('us-central1').https.onRequest((req, res) =
       });
 
       blobWriter.end(file.buffer);
-
     } catch (error) {
       res.status(500).send({ msg: error.message, status: 500 });
     }
   });
 });
-

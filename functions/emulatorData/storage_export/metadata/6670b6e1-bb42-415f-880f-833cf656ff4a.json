@@ -1,0 +1,22 @@
+{
+  "name": "user-galleries/QjNcLCZBf8kgDxgwM3sKfaVAhkOr/1692155558660_FIU_Example-02.png",
+  "bucket": "photo-sharing-app-354f6.appspot.com",
+  "metageneration": 1,
+  "generation": 1692155558668,
+  "contentType": "image/png",
+  "storageClass": "STANDARD",
+  "contentDisposition": "inline",
+  "downloadTokens": [
+    "fe380eac-a11c-45c9-9d0f-cacadf14b6ae"
+  ],
+  "etag": "fA8ZRqp3FO8Son0pq2GshMsUZzQ",
+  "customMetadata": {
+    "id": "1692155558660",
+    "description": ""
+  },
+  "timeCreated": "2023-08-16T03:12:38.668Z",
+  "updated": "2023-08-16T03:12:38.668Z",
+  "size": 248318,
+  "md5Hash": "Lq458wcGc39EStEydLYlHA==",
+  "crc32c": "1460544771"
+}

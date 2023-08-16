@@ -1,0 +1,22 @@
+{
+  "name": "user-galleries/QjNcLCZBf8kgDxgwM3sKfaVAhkOr/1692156753664_c2437777fc07069450795542d9efb350.jpg",
+  "bucket": "photo-sharing-app-354f6.appspot.com",
+  "metageneration": 1,
+  "generation": 1692156753673,
+  "contentType": "image/jpeg",
+  "storageClass": "STANDARD",
+  "contentDisposition": "inline",
+  "downloadTokens": [
+    "c1b1af8a-0e06-494b-98ae-3cfb7d1640c5"
+  ],
+  "etag": "LAq1CgFVJghvzXICd0LXb77oujo",
+  "customMetadata": {
+    "id": "1692156753664",
+    "description": ""
+  },
+  "timeCreated": "2023-08-16T03:32:33.673Z",
+  "updated": "2023-08-16T03:32:33.673Z",
+  "size": 66216,
+  "md5Hash": "wkN3d/wHBpRQeVVC2e+zUA==",
+  "crc32c": "3840920211"
+}

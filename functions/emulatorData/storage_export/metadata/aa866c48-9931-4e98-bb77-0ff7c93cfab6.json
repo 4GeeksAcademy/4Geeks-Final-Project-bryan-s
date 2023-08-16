@@ -1,0 +1,22 @@
+{
+  "name": "artworks/1692146977882_pravilnye-ikonki-oruzhija_1665607648_492167.jpg",
+  "bucket": "photo-sharing-app-354f6.appspot.com",
+  "metageneration": 1,
+  "generation": 1692146977891,
+  "contentType": "image/jpeg",
+  "storageClass": "STANDARD",
+  "contentDisposition": "inline",
+  "downloadTokens": [
+    "35e6dc01-f0c5-4ecf-8a04-068d32c4553a"
+  ],
+  "etag": "+Rqm64a5O15L0diqnq5SHqYCTtU",
+  "customMetadata": {
+    "id": "1692146977882",
+    "description": ""
+  },
+  "timeCreated": "2023-08-16T00:49:37.891Z",
+  "updated": "2023-08-16T00:49:37.891Z",
+  "size": 170587,
+  "md5Hash": "tukm5Rs++WB2OBZawohIcA==",
+  "crc32c": "2125439255"
+}

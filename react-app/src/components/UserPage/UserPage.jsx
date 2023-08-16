@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import Navbar from '../Navbar/Navbar';
 import Footer from '../Footer/Footer';
 import CardUi from './CardUi/CardUi';
+import GalleryUi from './GalleryUi/GalleryUi';
 import { Context } from '../../Context';
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import './UserPage.css';
@@ -47,6 +48,9 @@ const UserPage = () => {
                     <div className="box-01"></div>
                     <div className="user-profile-bar">
                         <CardUi userProfile={userProfile} editMode={editMode} setEditMode={setEditMode} />
+                    </div>
+                    <div className="user-gallery">
+                        <GalleryUi userProfile={userProfile} editMode={editMode} setEditMode={setEditMode} handleProfileUpdate={handleProfileUpdate} />
                     </div>
                 </div>
             </div>

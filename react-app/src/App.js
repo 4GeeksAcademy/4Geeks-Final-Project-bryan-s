@@ -7,6 +7,7 @@ import SignUp from './components/Sign-Up/SignUp';
 import Personalize from './components/Sign-Up/Personalize/Personalize';
 import HomePage from './components/HomePage/HomePage';
 import UserPage from './components/UserPage/UserPage';
+import ArtistProfile from './components/ArtistProfile/Artistprofile';
 import PageNotFound from './components/PageNotFound/PageNotFound';
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
         <Route path="/personalize" element={<Personalize />} />
         <Route path="/homepage" element={<HomePage />} />
         <Route path="/userpage/:id" element={<UserPage />} />
+        <Route path="/artistprofile/:id" element={<ArtistProfile />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </BrowserRouter>

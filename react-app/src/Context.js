@@ -6,65 +6,60 @@ import { storage, firestore } from './index';
 export const Context = createContext();
 
 export default function ContextProvider(props) {
-  const [user, setUser] = useState(null);
-  const [errorMsg, setErrorMsg] = useState('');
+    const [user, setUser] = useState(null);
+    const [errorMsg, setErrorMsg] = useState('');
 
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
-      if (firebaseUser) {
-        // Log to the console
-        console.log('User is signed in');
+    useEffect(() => {
+        const unsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
+            if (firebaseUser) {
+                console.log('User is signed in');
 
-        // Set basic user details first
-        setUser({
-          uid: firebaseUser.uid,
-          email: firebaseUser.email,
+                const db = getFirestore();
+                const userRef = doc(db, "users", firebaseUser.uid);
+                const userSnapshot = await getDoc(userRef);
+                if (userSnapshot.exists()) {
+                    setUser({
+                        uid: firebaseUser.uid,
+                        email: firebaseUser.email || '',
+                        fullName: userSnapshot.data().fullName || '',
+                        location: userSnapshot.data().location || '',
+                        bio: userSnapshot.data().bio || '',
+                        profilePic: userSnapshot.data().profilePic || ''
+                    });
+                }
+            } else {
+                console.log('User not signed in');
+                setUser(null);
+            }
         });
 
-        // Check Firestore for additional user details
-        const db = getFirestore();
-        const userRef = doc(db, "users", firebaseUser.uid);
-        const userSnapshot = await getDoc(userRef);
-        if (userSnapshot.exists()) {
-          setUser(prevState => ({ 
-            ...prevState, 
-            fullName: userSnapshot.data().fullName, 
-            location: userSnapshot.data().location,
-            bio: userSnapshot.data().bio,
-            profilePic: userSnapshot.data().profilePic
-          }));
-        }
-      
-      } else {
-        console.log('User not signed in');
-        setUser(null);
-      }
-    });
+        return () => unsubscribe();
+    }, []);
 
-    return () => unsubscribe();
-  }, []);
+    const signIn = async (email, password) => {
+        try {
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            if (userCredential.user) {
+                const db = getFirestore();
+                const userRef = doc(db, "users", userCredential.user.uid);
+                const userSnapshot = await getDoc(userRef);
 
-  const signIn = async (email, password) => {
-    try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      if (userCredential.user) {
-        const db = getFirestore();
-        const userRef = doc(db, "users", userCredential.user.uid);
-        const userSnapshot = await getDoc(userRef);
-
-        if (userSnapshot.exists()) {
-          setUser({
-            uid: userCredential.user.uid,
-            email: userCredential.user.email,
-            fullName: userSnapshot.data().fullName || ''  // Ensure the property exists
-          });
-          return true; // Sign in successful
-        } else {
-          throw new Error('User not found in database.');
-        }
-      }
-    } catch (error) {
-      let errorMessage;
+                if (userSnapshot.exists()) {
+                    setUser({
+                        uid: userCredential.user.uid,
+                        email: userCredential.user.email || '',
+                        fullName: userSnapshot.data().fullName || '',
+                        location: userSnapshot.data().location || '',
+                        bio: userSnapshot.data().bio || '',
+                        profilePic: userSnapshot.data().profilePic || ''
+                    });
+                    return true; // Sign in successful
+                } else {
+                    throw new Error('User not found in database.');
+                }
+            }
+        } catch (error) {
+            let errorMessage;
       switch (error.code) {
         case 'auth/invalid-email':
           errorMessage = 'Invalid email address.';
@@ -170,18 +165,19 @@ export default function ContextProvider(props) {
   const artUploading = async (title, file, uid) => {
     try {
         const bucket = storage.bucket();
-        const blob = bucket.file(file.name);
+        const filePath = `${uid}/${file.name}`;  // use the UID as a folder
+        const blob = bucket.file(filePath);  // Updated path here
         const blobWriter = blob.createWriteStream({
             metadata: {
                 contentType: file.type,
             },
         });
-
+  
         blobWriter.on('error', (err) => {
             console.error(err);
             throw new Error(err.message);
         });
-
+  
         blobWriter.on('finish', async () => {
             const publicUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURI(blob.name)}?alt=media`;
             const artRef = firestore.collection("art").doc();
@@ -193,19 +189,17 @@ export default function ContextProvider(props) {
             };
             await artRef.set(data);
         });
-
+  
         blobWriter.end(file.buffer);
     } catch (error) {
         console.error('Error uploading art:', error);
         throw error;
     }
-}
+  }
 
-return (
-  <Context.Provider value={{ user, setUser, errorMsg, setErrorMsg, signIn, signUp, personalize, artUploading }}>
-      {props.children}
-  </Context.Provider>
+  return (
+    <Context.Provider value={{ user, setUser, errorMsg, setErrorMsg, signIn, signUp, personalize, artUploading }}>
+        {props.children}
+    </Context.Provider>
 );
 }
-
-  

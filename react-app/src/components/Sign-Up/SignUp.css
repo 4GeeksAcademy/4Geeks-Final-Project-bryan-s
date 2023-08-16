@@ -214,7 +214,7 @@ i{
 
 /* Google Sign In */
 
-.google-signin {
+.google-signup {
     display: flex;
     width: 100%;
     align-items: center;
@@ -233,11 +233,11 @@ i{
     line-height: 1.5;
 }
 
-.google-signin:hover {
+.google-signup:hover {
     background-color: #2a75f3;
 }
 
-.google-signin svg {
+.google-signup svg {
     width: 20px; 
     height: 20px; 
     margin-right: 10px;

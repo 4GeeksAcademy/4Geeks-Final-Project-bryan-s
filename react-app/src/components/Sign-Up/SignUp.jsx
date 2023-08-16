@@ -95,7 +95,7 @@ const SignUp = () => {
                 <h3>Welcome to Vaultfolio</h3>
                 <small>Create a new account</small>
               </div>
-              <button className="google-signin">
+              <button className="google-signup">
             <FcGoogle />
             Sign Up with Google
           </button> 

@@ -112,40 +112,41 @@ exports.uploadArt = functions.region('us-central1').https.onRequest((req, res) =
     const { title, file, uid } = req.body;
 
     if (!title || !file || !uid) {
-      res.status(400).send('No title, file, or uid passed');
-      return;
+        res.status(400).send('No title, file, or uid passed');
+        return;
     }
 
     try {
-      const bucket = storage.bucket();
-      const blob = bucket.file(file.name);
-      const blobWriter = blob.createWriteStream({
-        metadata: {
-          contentType: file.type,
-        },
-      });
+        const bucket = storage.bucket();
+        const filePath = `${uid}/${file.name}`;  // Use the UID as a folder
+        const blob = bucket.file(filePath);  // Updated path here
+        const blobWriter = blob.createWriteStream({
+            metadata: {
+                contentType: file.type,
+            },
+        });
 
-      blobWriter.on('error', (err) => {
-        console.error(err);
-        res.status(500).send({ msg: err.message, status: 500 });
-      });
+        blobWriter.on('error', (err) => {
+            console.error(err);
+            res.status(500).send({ msg: err.message, status: 500 });
+        });
 
-      blobWriter.on('finish', async () => {
-        const publicUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURI(blob.name)}?alt=media`;
-        const artRef = firestore.collection("art").doc();
-        const data = {
-          title,
-          uid,
-          created_at: new Date().toISOString(),
-          url: publicUrl,
-        };
-        await artRef.set(data);
-        res.send({ data, msg: 'Operation successful', status: 200 });
-      });
+        blobWriter.on('finish', async () => {
+            const publicUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURI(blob.name)}?alt=media`;
+            const artRef = firestore.collection("art").doc();
+            const data = {
+                title,
+                uid,
+                created_at: new Date().toISOString(),
+                url: publicUrl,
+            };
+            await artRef.set(data);
+            res.send({ data, msg: 'Operation successful', status: 200 });
+        });
 
-      blobWriter.end(file.buffer);
+        blobWriter.end(file.buffer);
     } catch (error) {
-      res.status(500).send({ msg: error.message, status: 500 });
+        res.status(500).send({ msg: error.message, status: 500 });
     }
   });
 });

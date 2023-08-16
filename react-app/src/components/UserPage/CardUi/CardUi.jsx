@@ -122,26 +122,26 @@ const CardUi = () => {
 
   return (
     <div className="main-view">
-      <div className="full-width-box card">
-        <div className="imgBx">
-          <img src={profileImageUrl} alt="profile" />
+        <div className="full-width-box card">
+            <div className="imgBx">
+                <img src={profileImageUrl} alt="profile" />
+            </div>
+            <div className="user-profile-info">
+                <p className="fullName">{fullName || "N/A"}</p>
+                <p className="location">{location || "N/A"}</p>
+                <p className="bio">
+                    {splitLongLines(bio || "No bio available").map((line, index) => (
+                        <span key={index}>
+                            {line}
+                            <br />
+                        </span>
+                    ))}
+                </p>
+            </div>
+            <div className="edit-button">
+                <Button onClick={onOpen} colorScheme='linkedin' size='md'>Edit Profile</Button>
+            </div>
         </div>
-        <div className="user-profile-info">
-          <p className="fullName">{fullName}</p>
-          <p className="location">{location}</p>
-          <p className="bio">
-                {splitLongLines(bio).map((line, index) => (
-                <span key={index}>
-                {line}
-                <br />
-                </span>
-            ))}
-            </p>
-        </div>
-        <div className="edit-button">
-          <Button onClick={onOpen} colorScheme='linkedin' size='md'>Edit Profile</Button>
-        </div>
-      </div>
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />

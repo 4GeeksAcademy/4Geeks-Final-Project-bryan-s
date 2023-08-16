@@ -11,7 +11,7 @@ const NotFoundPage = () => {
 
   useEffect(() => {
     const fetchImage = async () => {
-      const gsReference = ref(storage, 'gs://photo-sharing-app-354f6.appspot.com/gears21.png');
+      const gsReference = ref(storage, 'placeholders/gears21.png');
       const url = await getDownloadURL(gsReference);
       setBgImage(url);
     }

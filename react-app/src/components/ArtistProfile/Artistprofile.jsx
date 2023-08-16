@@ -1,82 +1,50 @@
+
 import React, { useState, useEffect } from 'react';
 import Navbar from '../Navbar/Navbar';
-import { getAuth } from "firebase/auth";
-import { doc, getDoc, collection, getDocs } from "firebase/firestore";
-import { db } from "../firebase";
-
+import Footer from '../Footer/Footer';
+import APCardUi from './APCardUI/APCardUI';
+import APGalleryUI from './APGalleryUI/APGalleryUI';
+import { doc, getDoc } from "firebase/firestore";
 import './Artistprofile.css';
+import { firestore } from '../../index';
 
-const Artistprofile = () => {
+const ArtistProfile = ({ match }) => {
     const [userProfile, setUserProfile] = useState(null);
-    const [galleryItems, setGalleryItems] = useState([]);
-    const auth = getAuth();
-    const currentUser = auth.currentUser;
+    const userId = match.params.uid; // Assuming you're using React Router and the uid is a route parameter.
 
     useEffect(() => {
-      const fetchUserProfileAndGallery = async () => {
-        if (currentUser) {
-          const userDocRef = doc(db, "users", currentUser.uid);
-          const userDocSnap = await getDoc(userDocRef);
-          if (userDocSnap.exists()) {
-            setUserProfile(userDocSnap.data());
-          } else {
-            console.log("No such document!");
-          }
+        const fetchUserProfile = async () => {
+            const userDocRef = doc(firestore, "users", userId);
+            const userDocSnap = await getDoc(userDocRef);
+            if (userDocSnap.exists()) {
+                setUserProfile(userDocSnap.data());
+            } else {
+                console.log("No such document!");
+            }
+        };
 
-          const galleryColRef = collection(userDocRef, "gallery");
-          const galleryQuerySnapshot = await getDocs(galleryColRef);
-          setGalleryItems(galleryQuerySnapshot.docs.map(doc => doc.data()));
-        }
-      };
+        fetchUserProfile();
+    }, [userId]);
 
-      fetchUserProfileAndGallery();
-    }, [currentUser]);
-
-    if (!userProfile || !galleryItems) return 'Loading...';
+    if (!userProfile) return 'Loading...';
 
     return (
-        <div>
+        <div className='main'>
             <Navbar />
-            <div className="artist-profile">
-                <div className="artist-profile-header">
-                    <div>
-                        <img src={userProfile.profilePic} alt="artist-profile-pic" />
+            <div className="user-page">
+                <div className="user-profile">
+                    <div className="box-01"></div>
+                    <div className="user-profile-bar">
+                        <APCardUi userProfile={userProfile} />
                     </div>
-                    <div className="artist-profile-name">
-                        <p>{userProfile.name}</p>
-                    </div>
-                    <div className="artist-profile-bio">
-                        <p>{userProfile.bio}</p>
-                    </div>
-                    <div className="artist-profile-location">
-                        <p>{userProfile.location}</p>
-                    </div>
-                </div>
-                <div className="artist-profile-body">
-                    <div className="navigation-bar">
-                        <div className="navigation-bar-item">
-                            <a href="/projects">Projects</a>
-                        </div>
-                        <div className="navigation-bar-item">
-                            <a href="/about">About</a>
-                        </div>
-                    </div>
-                    <div className="artist-profile-projects">
-                        <div className="gallery-container">
-                            <div className="gallery">
-                                {galleryItems.map((item, index) => (
-                                    <div key={index} className="gallery-item">
-                                        <img src={item.imageURL} alt="gallery-item" />
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
+                    <div className="user-gallery">
+                        <APGalleryUI userProfile={userProfile} />
                     </div>
                 </div>
             </div>
+            <Footer />
         </div>
     );
-};
+};    
 
-export default Artistprofile;
-
+export default ArtistProfile;

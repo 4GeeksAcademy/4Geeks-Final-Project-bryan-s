@@ -18,3 +18,10 @@ export const deleteArtwork = (artworkId) => {
         payload: artworkId
     }
 }
+
+/**
+ * Redux action creators for managing artworks.
+ * 
+ * Provides functions to create actions related to artworks,
+ * such as adding, setting, and deleting them.
+ */

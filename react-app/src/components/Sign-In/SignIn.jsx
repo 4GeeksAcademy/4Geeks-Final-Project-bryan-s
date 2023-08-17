@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { FcGoogle } from 'react-icons/fc';
 import './SignIn.css';
-import { useGoogleAuth } from '../GoogleAuth';
+import useGoogleAuth from '../GoogleAuth';
 import Logo from '../Logo/MainLogo';
 import Footer from '../Footer/Footer';
 import { Context } from '../../Context';

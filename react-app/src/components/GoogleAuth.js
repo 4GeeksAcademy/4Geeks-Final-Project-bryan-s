@@ -1,49 +1,32 @@
 import { useContext } from 'react';
-import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import { Context } from '../Context'; 
-import { auth } from '../index';
+import { Context } from '../Context';
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 
-export const useGoogleAuth = () => { 
-  const { setUser } = useContext(Context);
+const useGoogleAuth = () => {
+  const auth = getAuth();
   const provider = new GoogleAuthProvider();
+  
+  const { setErrorMsg } = useContext(Context); // Use context to set error messages
 
-  const signInWithGoogle = async () => { 
+  const signInWithGoogle = async () => {
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
-
-      console.log('User: ', user);
-
-      // Check if the user exists in your custom backend
-      const signInResponse = await fetch(`${process.env.REACT_APP_FIREBASE_FUNCTIONS_HOST}photo-sharing-app-354f6/us-central1/signInUser`, {
-        method: 'post',
-        body: JSON.stringify({ email: user.email }),
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-
-      // If the user doesn't exist, sign them up.
-      if (signInResponse.status !== 200) {
-        const signUpResponse = await fetch(`${process.env.REACT_APP_FIREBASE_FUNCTIONS_HOST}photo-sharing-app-354f6/us-central1/signUpUser`, {
-          method: 'post',
-          body: JSON.stringify({ email: user.email, /* Other user info if necessary */ }),
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        });
-
-        const dbUser = await signUpResponse.json();
-        setUser(dbUser.data);
+      if (user) {
+        // Do additional tasks if needed like saving the user data in your database
+        return true;
       } else {
-        const dbUser = await signInResponse.json();
-        setUser(dbUser.data);
+        setErrorMsg("Failed to authenticate with Google");
+        return false;
       }
-
     } catch (error) {
-      console.error(error);
+      setErrorMsg(error.message);
+      return false;
     }
   };
 
-  return signInWithGoogle; 
+  return signInWithGoogle;
 };
+
+export default useGoogleAuth;
+

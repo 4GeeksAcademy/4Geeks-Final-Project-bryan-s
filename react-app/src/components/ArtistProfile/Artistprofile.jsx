@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { useParams } from "react-router-dom";
 import Navbar from '../Navbar/Navbar';
 import Footer from '../Footer/Footer';
 import APCardUi from './APCardUI/APCardUI';
@@ -10,21 +11,26 @@ import { firestore } from '../../index';
 
 const ArtistProfile = ({ match }) => {
     const [userProfile, setUserProfile] = useState(null);
-    const userId = match.params.uid; // Assuming you're using React Router and the uid is a route parameter.
+    const { id } = useParams();
+    const userId = id;
 
     useEffect(() => {
         const fetchUserProfile = async () => {
-            const userDocRef = doc(firestore, "users", userId);
-            const userDocSnap = await getDoc(userDocRef);
-            if (userDocSnap.exists()) {
-                setUserProfile(userDocSnap.data());
-            } else {
-                console.log("No such document!");
+            try {
+                const userDocRef = doc(firestore, "users", userId);
+                const userDocSnap = await getDoc(userDocRef);
+                if (userDocSnap.exists()) {
+                    setUserProfile(userDocSnap.data());
+                } else {
+                    console.log("No such document!");
+                }
+            } catch (error) {
+                console.error("Error fetching user profile:", error);
             }
         };
-
+    
         fetchUserProfile();
-    }, [userId]);
+    }, [userId]);    
 
     if (!userProfile) return 'Loading...';
 

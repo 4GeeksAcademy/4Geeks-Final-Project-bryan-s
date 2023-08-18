@@ -5,7 +5,7 @@ import useGoogleAuth from '../GoogleAuth';
 import Logo from '../Logo/MainLogo';
 import Footer from '../Footer/Footer';
 import { Context } from '../../Context';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const SignIn = () => {
   const signInWithGoogle = useGoogleAuth();
@@ -19,7 +19,6 @@ const SignIn = () => {
 
   const handleSignIn = async (event) => {
     event.preventDefault();
-
     setErrorMsg('');
 
     try {
@@ -30,7 +29,14 @@ const SignIn = () => {
     } catch (error) {
       alert(errorMsg);
     }
-  };  
+  };
+
+  const handleGoogleSignIn = async () => {
+    const wasSuccessful = await signInWithGoogle();
+    if (wasSuccessful) {
+      navigate('/homepage');
+    }
+  };
 
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
@@ -49,7 +55,7 @@ const SignIn = () => {
             <div>
               <p className='error-msg'>{errorMsg}</p>
             </div>
-            <button className="google-signin" onClick={signInWithGoogle}>
+            <button className="google-signin" onClick={handleGoogleSignIn}>
               <FcGoogle />
               Sign In with Google
             </button>
@@ -89,8 +95,9 @@ const SignIn = () => {
                 <input type="submit" className="input-submit" value="Sign In" />
               </div>
               <div className="forgot">
-                <a href="/ForgotPassword">Forgot password?</a>
-              </div>
+              <Link to="/ForgotPassword">Forgot password?</Link>
+            </div>
+            
             </form>
           </div>
         </div>
@@ -101,4 +108,5 @@ const SignIn = () => {
 };
 
 export default SignIn;
+
 

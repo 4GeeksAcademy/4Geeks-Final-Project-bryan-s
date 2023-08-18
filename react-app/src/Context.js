@@ -1,40 +1,40 @@
 import React, { createContext, useState, useEffect } from 'react';
-import { auth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from './index';
+import { auth, signInWithEmailAndPassword, createUserWithEmailAndPassword, storage, firestore } from './index';
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
-import { storage, firestore } from './index';
 
 export const Context = createContext();
 
 export default function ContextProvider(props) {
-    const [user, setUser] = useState(null);
-    const [errorMsg, setErrorMsg] = useState('');
+  const [user, setUser] = useState(null);
+  const [errorMsg, setErrorMsg] = useState('');
 
-    useEffect(() => {
-        const unsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
-            if (firebaseUser) {
-                console.log('User is signed in');
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
+      if (firebaseUser) {
+        console.log('User is signed in');
 
-                const db = getFirestore();
-                const userRef = doc(db, "users", firebaseUser.uid);
-                const userSnapshot = await getDoc(userRef);
-                if (userSnapshot.exists()) {
-                    setUser({
-                        uid: firebaseUser.uid,
-                        email: firebaseUser.email || '',
-                        fullName: userSnapshot.data().fullName || '',
-                        location: userSnapshot.data().location || '',
-                        bio: userSnapshot.data().bio || '',
-                        profilePic: userSnapshot.data().profilePic || ''
-                    });
-                }
-            } else {
-                console.log('User not signed in');
-                setUser(null);
-            }
-        });
+        const db = getFirestore();
+        const userRef = doc(db, "users", firebaseUser.uid);
+        const userSnapshot = await getDoc(userRef);
+        if (userSnapshot.exists()) {
+          setUser({
+            uid: firebaseUser.uid,
+            email: firebaseUser.email || '',
+            fullName: userSnapshot.data().fullName || '',
+            location: userSnapshot.data().location || '',
+            bio: userSnapshot.data().bio || '',
+            profilePic: userSnapshot.data().profilePic || ''
+          });
+        }
+      } else {
+        console.log('User not signed in');
+        setUser(null);
+      }
+    });
 
-        return () => unsubscribe();
-    }, []);
+    return () => unsubscribe();
+  }, []);
 
     const signIn = async (email, password) => {
         try {
@@ -197,9 +197,62 @@ export default function ContextProvider(props) {
     }
   }
 
+
+  const signInWithGoogle = async () => {
+    const googleAuth = getAuth();
+    const provider = new GoogleAuthProvider();
+
+    try {
+      const result = await signInWithPopup(googleAuth, provider);
+      const firebaseUser = result.user;
+
+      if (firebaseUser) {
+        const db = getFirestore();
+        const userRef = doc(db, "users", firebaseUser.uid);
+        const userSnapshot = await getDoc(userRef);
+
+        if (userSnapshot.exists()) {
+          const userData = userSnapshot.data();
+          setUser({
+            uid: firebaseUser.uid,
+            email: firebaseUser.email || '',
+            fullName: userData.fullName || 'No Name',
+            location: userData.location || 'n/a',
+            bio: userData.bio || '',
+            profilePic: userData.profilePic || ''
+          });
+
+          return true;
+        } else {
+          await setDoc(userRef, {
+            uid: firebaseUser.uid,
+            email: firebaseUser.email,
+            fullName: firebaseUser.displayName,
+            profilePic: firebaseUser.photoURL
+          });
+
+          setUser({
+            uid: firebaseUser.uid,
+            email: firebaseUser.email,
+            fullName: firebaseUser.displayName,
+            profilePic: firebaseUser.photoURL
+          });
+
+          return true;
+        }
+      } else {
+        setErrorMsg("Failed to authenticate with Google");
+        return false;
+      }
+    } catch (error) {
+      setErrorMsg(error.message);
+      return false;
+    }
+  };
+
   return (
-    <Context.Provider value={{ user, setUser, errorMsg, setErrorMsg, signIn, signUp, personalize, artUploading }}>
-        {props.children}
+    <Context.Provider value={{ user, setUser, errorMsg, setErrorMsg, signIn, signUp, personalize, artUploading, signInWithGoogle }}>
+      {props.children}
     </Context.Provider>
-);
+  );
 }

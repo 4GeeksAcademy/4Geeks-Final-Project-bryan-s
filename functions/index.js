@@ -11,16 +11,10 @@ const auth = getAuth(admin);
 const firestore = getFirestore(admin);
 const storage = getStorage(admin);
 
+
 // Middleware for handling CORS
 const corsHandler = require('./corsMiddleware');
 
-// Cloud Function: Simple greeting function
-exports.helloWorld = functions.region('us-central1').https.onRequest((req, res) => {
-  corsHandler(req, res, () => {
-    logger.info("Hello logs!", { structuredData: true });
-    res.send("Hello from Firebase!");
-  });
-});
 
 // Cloud Function: Fetch all users based on search query
 exports.getUsers = functions.region('us-central1').https.onRequest((req, res) => {
@@ -100,10 +94,21 @@ exports.resetPassword = functions.region('us-central1').https.onRequest((req, re
       return;
     }
     try {
+      // Check if the user with the provided email exists
+      const userRecord = await auth.getUserByEmail(email);
+
+      // If the user exists, send a password reset email
       await auth.sendPasswordResetEmail(email);
+
       res.send({ msg: 'Password reset email sent', status: 200 });
     } catch (error) {
-      res.status(500).send({ msg: error.message, status: 500 });
+      if (error.code === 'auth/user-not-found') {
+        // If user is not found, return a specific response
+        res.status(404).send({ msg: 'User not found', status: 404 });
+      } else {
+        // Handle other errors
+        res.status(500).send({ msg: error.message, status: 500 });
+      }
     }
   });
 });

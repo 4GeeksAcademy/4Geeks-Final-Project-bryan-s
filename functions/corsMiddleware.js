@@ -4,7 +4,6 @@ const corsOptions = {
     origin: 'http://localhost:3000',
     optionsSuccessStatus: 200,
     optionsFailureStatus: 500,
-    // Add error logging for CORS
     preflightContinue: false,
     onPreflight: (req, res, next) => {
         if (!res.headersSent) {
@@ -16,3 +15,4 @@ const corsOptions = {
 };
 
 module.exports = cors(corsOptions);
+

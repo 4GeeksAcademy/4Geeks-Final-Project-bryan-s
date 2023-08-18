@@ -1,0 +1,12 @@
+body {
+    background: #0B132B;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.mosaic {
+    padding-top: 120px !important;
+    padding: 2%;
+    flex: 1; 
+}

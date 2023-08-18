@@ -11,14 +11,19 @@ const NotFoundPage = () => {
 
   useEffect(() => {
     const fetchImage = async () => {
-      const gsReference = ref(storage, 'placeholders/gears21.png');
-      const url = await getDownloadURL(gsReference);
-      setBgImage(url);
+      try {
+        const gsReference = ref(storage, 'placeholders/gears21.png');
+        const url = await getDownloadURL(gsReference);
+        setBgImage(url);
+      } catch (error) {
+        console.error("Error fetching image:", error);
+      }
     }
-
+  
     fetchImage();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  
 
   return (
     <div className="main">

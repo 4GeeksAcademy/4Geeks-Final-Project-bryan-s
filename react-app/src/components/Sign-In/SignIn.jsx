@@ -95,7 +95,7 @@ const SignIn = () => {
                 <input type="submit" className="input-submit" value="Sign In" />
               </div>
               <div className="forgot">
-              <Link to="/ForgotPassword">Forgot password?</Link>
+              <Link to="/ResetPassword">Forgot password?</Link>
             </div>
             
             </form>
